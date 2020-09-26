@@ -1,0 +1,163 @@
+function OR () {
+    if (Eingang_A == 1 || Eingang_B == 1) {
+        Ausgang_A = 1
+    } else {
+        Ausgang_A = 0
+    }
+}
+function NOT () {
+    if (Eingang_A == 1) {
+        Ausgang_A = 0
+    } else {
+        Ausgang_A = 1
+    }
+}
+function XNOR () {
+    if (Eingang_A == Eingang_B) {
+        Ausgang_A = 1
+    } else {
+        Ausgang_A = 0
+    }
+}
+function zeigeGatter () {
+    basic.clearScreen()
+    if (Logikfunktion <= 5) {
+        led.plot(2, 4 - Logikfunktion % 3)
+    }
+    if (Logikfunktion >= 3 && Logikfunktion <= 6) {
+        led.plot(2, 1)
+    }
+    if (Logikfunktion == 7) {
+        led.plot(2, 0)
+    }
+}
+function AND () {
+    if (Eingang_A == 1 && Eingang_B == 1) {
+        Ausgang_A = 1
+    } else {
+        Ausgang_A = 0
+    }
+}
+function zeigeSignale () {
+    if (Logikfunktion <= 5 || Logikfunktion == 7) {
+        if (Eingang_A == 0) {
+            led.unplot(0, 1)
+        } else {
+            led.plot(0, 1)
+        }
+        if (Eingang_B == 0) {
+            led.unplot(0, 3)
+        } else {
+            led.plot(0, 3)
+        }
+    } else if (Logikfunktion == 6) {
+        if (Eingang_A == 0) {
+            led.unplot(0, 2)
+        } else {
+            led.plot(0, 2)
+        }
+    }
+    if (Logikfunktion <= 6) {
+        if (Ausgang_A == 0) {
+            led.unplot(4, 2)
+            basic.setLedColor(Colors.Red)
+        } else {
+            led.plot(4, 2)
+            basic.setLedColor(Colors.Green)
+        }
+    } else {
+        basic.setLedColor(0)
+        if (Ausgang_A == 0) {
+            led.unplot(4, 1)
+        } else {
+            led.plot(4, 1)
+        }
+        if (Ausgang_B == 0) {
+            led.unplot(4, 3)
+        } else {
+            led.plot(4, 3)
+        }
+    }
+}
+function Halbadder () {
+    if (Eingang_A + Eingang_B == 0) {
+        Ausgang_A = 0
+        Ausgang_B = 0
+    } else if (Eingang_A + Eingang_B == 1) {
+        Ausgang_A = 1
+        Ausgang_B = 0
+    } else {
+        Ausgang_A = 0
+        Ausgang_B = 1
+    }
+}
+input.onButtonPressed(Button.AB, function () {
+    Modus = (Modus + 1) % 2
+    if (Modus == 1) {
+        basic.setLedColor(0x0000ff)
+    } else {
+        basic.setLedColor(0xffffff)
+    }
+})
+input.onButtonPressed(Button.B, function () {
+    if (Modus == 1) {
+        Logikfunktion = (Logikfunktion + 1) % 8
+        zeigeGatter()
+    }
+})
+function NOR () {
+    if (Eingang_A == 1 || Eingang_B == 1) {
+        Ausgang_A = 0
+    } else {
+        Ausgang_A = 1
+    }
+}
+function NAND () {
+    if (Eingang_A == 1 && Eingang_B == 1) {
+        Ausgang_A = 0
+    } else {
+        Ausgang_A = 1
+    }
+}
+function XOR () {
+    if (Eingang_A != Eingang_B) {
+        Ausgang_A = 1
+    } else {
+        Ausgang_A = 0
+    }
+}
+let Ausgang_B = 0
+let Ausgang_A = 0
+let Eingang_B = 0
+let Eingang_A = 0
+let Logikfunktion = 0
+let Modus = 0
+Modus = 0
+Logikfunktion = 0
+zeigeGatter()
+basic.forever(function () {
+    if (Modus == 0) {
+        Eingang_A = pins.digitalReadPin(DigitalPin.P0)
+        Eingang_B = pins.digitalReadPin(DigitalPin.P1)
+        if (Logikfunktion == 0) {
+            AND()
+        } else if (Logikfunktion == 1) {
+            OR()
+        } else if (Logikfunktion == 2) {
+            XOR()
+        } else if (Logikfunktion == 3) {
+            NAND()
+        } else if (Logikfunktion == 4) {
+            NOR()
+        } else if (Logikfunktion == 5) {
+            XNOR()
+        } else if (Logikfunktion == 6) {
+            NOT()
+        } else if (Logikfunktion == 7) {
+            Halbadder()
+            pins.digitalWritePin(DigitalPin.P2, Ausgang_B)
+        }
+        pins.digitalWritePin(DigitalPin.P3, Ausgang_A)
+        zeigeSignale()
+    }
+})
