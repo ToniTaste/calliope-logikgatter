@@ -1,0 +1,23 @@
+basic.forever(function () {
+    if (input.buttonIsPressed(Button.A) && !(input.buttonIsPressed(Button.B))) {
+        pins.digitalWritePin(DigitalPin.P1, 1)
+        pins.digitalWritePin(DigitalPin.P2, 0)
+        led.plot(0, 2)
+        led.unplot(4, 2)
+    } else if (!(input.buttonIsPressed(Button.A)) && input.buttonIsPressed(Button.B)) {
+        pins.digitalWritePin(DigitalPin.P1, 0)
+        pins.digitalWritePin(DigitalPin.P2, 1)
+        led.unplot(0, 2)
+        led.plot(4, 2)
+    } else if (!(input.buttonIsPressed(Button.A)) && !(input.buttonIsPressed(Button.B))) {
+        led.unplot(0, 2)
+        led.unplot(4, 2)
+        pins.digitalWritePin(DigitalPin.P1, 0)
+        pins.digitalWritePin(DigitalPin.P2, 0)
+    } else if (input.buttonIsPressed(Button.A) && input.buttonIsPressed(Button.B)) {
+        pins.digitalWritePin(DigitalPin.P1, 1)
+        pins.digitalWritePin(DigitalPin.P2, 1)
+        led.plot(0, 2)
+        led.plot(4, 2)
+    }
+})
